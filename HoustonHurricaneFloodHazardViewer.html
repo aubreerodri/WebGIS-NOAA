@@ -24,7 +24,7 @@
         <label><input type="radio" name="layerSelector" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
         <label><input type="radio" name="layerSelector" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
         <!-- <label><input type="radio" name="layerSelector" id="criticalFacilitiesSwitch"> Critical Facilities</label> -->
-        <label><input type="radio" name="layerSelector" id="noneSwitch" checked> None</label>
+        <label><input type="radio" name="layerSelector" id="harveyinundationSwitch" checked> None</label>
     </div>
 
     
@@ -81,8 +81,8 @@
             toggleLayer('vulnerablePopulationsLayer', "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_BGs_Vulnerable_Population/MapServer", 'dynamicMapLayer');
         });
 
-        document.getElementById('noneSwitch').addEventListener('change', function () {
-            toggleLayer('noLayer', "", 'noLayer');
+        document.getElementById('harveyinundationSwitch').addEventListener('change', function() {
+            toggleLayer(this.checked, 'harveyinundationLayer', "https://tiles.arcgis.com/tiles/nzS0F0zdNLvs7nc8/arcgis/rest/services/Harvey_DFO_Inundation_Tile3/MapServer", 'tiledMapLayer');
         });
 
         // document.getElementById('criticalFacilitiesSwitch').addEventListener('change', function() {
