@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Houston Hurricane and Flood Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -15,20 +15,41 @@
 
 <body>
     <div id="header">Houston Hurricane and Flood Map</div>
+    
     <div id="map"></div>
     <div class="controls">
         <label><input type="checkbox" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
         <label><input type="checkbox" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
         <label><input type="checkbox" id="criticalFacilitiesSwitch"> Critical Facilities</label>
     </div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    
+    <div class="navForm">
+        <form id="form">
+            <input type="text" name="start" class="input" id="start" placeholder="Choose a start"/>
+            <input type="text" name="destination" class="input" id="destination" placeholder="Choose a destination"/>
+            <button type="submit">Navigate!</button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=1Qg2WrWJ7pmr6ojEZ3nbUc2trjVc4s9N"></script>
+    <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=1Qg2WrWJ7pmr6ojEZ3nbUc2trjVc4s9N"></script>
     <script src="https://unpkg.com/esri-leaflet@3.0.2"></script>
+    <script src="Navigation.js"></script>
+
     <script>
-        const map = L.map('map').setView([29.7604, -95.3698], 9);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19,
-        }).addTo(map);
+        const map = L.map('map', {
+            center: [29.7604, -95.3698],
+            zoom: 9
+        });
+
+        MQ.mapLayer().addTo(map);
+        window['directionsLayer'] = null;
+
+        // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //     attribution: '© OpenStreetMap contributors',
+        //     maxZoom: 19,
+        // }).addTo(map);
 
         function toggleLayer(checked, layerName, url, layerType = 'featureLayer') {
             if (checked) {

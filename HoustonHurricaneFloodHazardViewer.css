@@ -29,7 +29,7 @@ body,html {
 
 .controls {
     position: absolute;
-    top: 75px;
+    top: 120px;
     right: 15px;
     background: rgba(255, 255, 255, 0.7);
     padding: 5px;
@@ -45,4 +45,15 @@ body,html {
 
 .controls input {
     margin-right: 5px;
+}
+
+.navForm{
+    position: absolute;
+    top: 75px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
 }
