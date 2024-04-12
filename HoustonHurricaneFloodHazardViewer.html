@@ -20,9 +20,11 @@
     
     <div id="map"></div>
     <div class="controls">
-        <label><input type="checkbox" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
-        <label><input type="checkbox" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
-        <label><input type="checkbox" id="criticalFacilitiesSwitch"> Critical Facilities</label>
+        <label><strong>Layer Selection:</strong></label>
+        <label><input type="radio" name="layerSelector" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
+        <label><input type="radio" name="layerSelector" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
+        <!-- <label><input type="radio" name="layerSelector" id="criticalFacilitiesSwitch"> Critical Facilities</label> -->
+        <label><input type="radio" name="layerSelector" id="noneSwitch" checked> None</label>
     </div>
 
     
@@ -52,34 +54,40 @@
         L.mapquest.tileLayer('map').addTo(map);
         window['directionsLayer'] = null;
 
-        function toggleLayer(checked, layerName, url, layerType = 'featureLayer') {
-            if (checked) {
-                if (layerType === 'dynamicMapLayer') {
-                    window[layerName] = L.esri.dynamicMapLayer({url: url}).addTo(map);
-                } else if (layerType === 'tiledMapLayer') {
-                    window[layerName] = L.esri.tiledMapLayer({url: url}).addTo(map);
-                } else { // Default to featureLayer
-                    window[layerName] = L.esri.featureLayer({url: url}).addTo(map);
+        const layerNames = ["femaLayer", "vulnerablePopulationsLayer"]
+
+        function toggleLayer(layerName, url, layerType = 'featureLayer') {
+            layerNames.map((checkName) => {
+                if (checkName != layerName && window[checkName]) {
+                    map.removeLayer(window[checkName]);
+                    window[checkName] = null;
                 }
-            } else {
-                if (window[layerName]) {
-                    map.removeLayer(window[layerName]);
-                    window[layerName] = null;
-                }
+            });
+
+            if (layerType === 'dynamicMapLayer') {
+                window[layerName] = L.esri.dynamicMapLayer({url: url}).addTo(map);
+            } else if (layerType === 'tiledMapLayer') {
+                window[layerName] = L.esri.tiledMapLayer({url: url}).addTo(map);
+            } else if (layerType === 'featureLayer') {
+                window[layerName] = L.esri.featureLayer({url: url}).addTo(map);
             }
         }
 
         document.getElementById('femaLayerSwitch').addEventListener('change', function() {
-            toggleLayer(this.checked, 'femaLayer', "https://gis.h-gac.com/arcgis/rest/services/Resilience/FEMA_NFHL_2019_Floodplain_13co/MapServer", 'tiledMapLayer');
+            toggleLayer('femaLayer', "https://gis.h-gac.com/arcgis/rest/services/Resilience/FEMA_NFHL_2019_Floodplain_13co/MapServer", 'tiledMapLayer');
         });
 
         document.getElementById('vulnerablePopulationsSwitch').addEventListener('change', function() {
-            toggleLayer(this.checked, 'vulnerablePopulationsLayer', "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_BGs_Vulnerable_Population/MapServer", 'dynamicMapLayer');
+            toggleLayer('vulnerablePopulationsLayer', "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_BGs_Vulnerable_Population/MapServer", 'dynamicMapLayer');
         });
 
-        document.getElementById('criticalFacilitiesSwitch').addEventListener('change', function() {
-            toggleLayer(this.checked, 'criticalFacilitiesLayer', "https://gis.h-gac.com/arcgis/rest/services/Hazard/Critical_Facilities/MapServer", 'dynamicMapLayer');
+        document.getElementById('noneSwitch').addEventListener('change', function () {
+            toggleLayer('noLayer', "", 'noLayer');
         });
+
+        // document.getElementById('criticalFacilitiesSwitch').addEventListener('change', function() {
+        //     toggleLayer('criticalFacilitiesLayer', "https://gis.h-gac.com/arcgis/rest/services/Hazard/Critical_Facilities/MapServer", 'dynamicMapLayer');
+        // });
     </script>
 </body>
 </html>
