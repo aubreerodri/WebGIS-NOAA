@@ -1,58 +1,51 @@
 function runDirections(start, destination) {
+    var dir = L.mapquest.directions();
 
-    var dir = MQ.routing.directions();
-
-    console.log(typeof start)
-    console.log(typeof destination)
-
-    dir.route({
-        key: "1Qg2WrWJ7pmr6ojEZ3nbUc2trjVc4s9N",
-        from: start,
-        to: destination
-    });
-    //mapquest routing directions API
-
-    CustomRouteLayer = MQ.Routing.RouteLayer.extend({
-        createStartMarker: (location) => {
-            var pin;
-            var marker;
-
-            custom_pin = L.icon({
-                iconUrl: 'images/orange-pin.png',
-                iconSize: [20, 29],
-                iconAnchor: [10, 29],
-                popupAnchor: [0, -29]
-            });
-            marker = L.marker(location.latlng, {icon: pin}).addTo(map);
-            return marker;
+    dir.setLayerOptions({
+        startMarker: {
+            icon: 'circle',
+            iconOptions: {
+                size: 'sm',
+                primaryColor: '#1fc715',
+                secondaryColor: '#1fc715',
+                symbol: 'A'
+            },
+            draggable: false
         },
-        createEndMarker: (location) => {
-            var pin;
-            var marker;
-
-            custom_pin = L.icon({
-                iconUrl: 'images/gold-pin.png',
-                iconSize: [20, 29],
-                iconAnchor: [10, 29],
-                popupAnchor: [0, -29]
-            });
-            marker = L.marker(location.latlng, {icon: pin}).addTo(map);
-            return marker;
+        endMarker: {
+            icon: 'circle',
+            iconOptions: {
+                size: 'sm',
+                primaryColor: '#e9304f',
+                secondaryColor: '#e9304f',
+                symbol: 'B'
+            },
+            draggable: false
+        },
+        routeRibbon: {
+            color: "#2aa6ce",
+            opacity: 1.0,
+            showTraffic: true
         }
     });
 
-    window['directionsLayer'] = new CustomRouteLayer({
-        directions: dir,
-        fitBounds: true
-    });
+    dir.route({
+        start: start,
+        end: destination
+    }, (err, response) => {
+        var CustomRouteLayer = L.mapquest.directionsLayer({
+            directionsResponse: response
+        });
 
-    map.addLayer(window['directionsLayer']);
+        window['directionsLayer'] = CustomRouteLayer;
+
+        CustomRouteLayer.addTo(map);
+    });
 }
 
 //function that runs when form is submitted
 function submitForm(event) {
     event.preventDefault();
-    console.log('Form Submitted');
 
     if (window['directionsLayer'] !== null) {
         map.removeLayer(window['directionsLayer']);
