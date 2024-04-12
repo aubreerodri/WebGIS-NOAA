@@ -16,7 +16,8 @@ body,html {
     color: white;
     padding: 10px 0;
     font-size: 30px;
-    text-align: center;
+    text-align: left;
+    text-indent: 26%;
 }
 
 #map {
@@ -29,7 +30,7 @@ body,html {
 
 .controls {
     position: absolute;
-    top: 75px;
+    top: 120px;
     right: 15px;
     background: rgba(255, 255, 255, 0.7);
     padding: 5px;
@@ -45,4 +46,62 @@ body,html {
 
 .controls input {
     margin-right: 5px;
+}
+
+.navForm{
+    position: absolute;
+    top: 75px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}
+
+.home-button {
+    float: left;
+    margin-left: 10px;
+    margin-top: -5px;
+    align-items: center;
+    background-clip: padding-box;
+    background-color: #fa6400;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 1.25;
+    min-height: 3rem;
+    padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+    position: relative;
+    text-decoration: none;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+}
+
+.home-button:hover,
+.home-button:focus {
+    background-color: #fb8332;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+}
+
+.home-button:hover {
+    transform: translateY(-1px);
+}
+
+.home-button:active {
+    background-color: #c85000;
+    box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
+    transform: translateY(0);
 }

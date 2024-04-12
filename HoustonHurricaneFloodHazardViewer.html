@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Houston Hurricane and Flood Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+    <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,49 +16,80 @@
 </head>
 
 <body>
-    <div id="header">Houston Hurricane and Flood Map</div>
+    <div id="header">
+        <button class="home-button" role="button" onclick="window.location.href='index.html'">Home</button>
+        Houston Hurricane and Flood Map
+    </div>
+    
     <div id="map"></div>
     <div class="controls">
-        <label><input type="checkbox" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
-        <label><input type="checkbox" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
-        <label><input type="checkbox" id="criticalFacilitiesSwitch"> Critical Facilities</label>
+        <label><strong>Layer Selection:</strong></label>
+        <label><input type="radio" name="layerSelector" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
+        <label><input type="radio" name="layerSelector" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
+        <label><input type="radio" name="layerSelector" id="harveyinundationSwitch" checked> Harvey Inundation</label>
+        <label><input type="radio" name="layerSelector" id="noneSwitch" checked> None</label>
     </div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/esri-leaflet@3.0.2"></script>
-    <script>
-        const map = L.map('map').setView([29.7604, -95.3698], 9);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19,
-        }).addTo(map);
 
-        function toggleLayer(checked, layerName, url, layerType = 'featureLayer') {
-            if (checked) {
-                if (layerType === 'dynamicMapLayer') {
-                    window[layerName] = L.esri.dynamicMapLayer({url: url}).addTo(map);
-                } else if (layerType === 'tiledMapLayer') {
-                    window[layerName] = L.esri.tiledMapLayer({url: url}).addTo(map);
-                } else { // Default to featureLayer
-                    window[layerName] = L.esri.featureLayer({url: url}).addTo(map);
+    
+    <div class="navForm">
+        <form id="form">
+            <input type="text" name="start" class="input" id="start" placeholder="Choose a start"/>
+            <input type="text" name="destination" class="input" id="destination" placeholder="Choose a destination"/>
+            <button type="submit">Navigate!</button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <!-- <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=1Qg2WrWJ7pmr6ojEZ3nbUc2trjVc4s9N"></script> -->
+    <!-- <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=1Qg2WrWJ7pmr6ojEZ3nbUc2trjVc4s9N"></script> -->
+    <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+
+    <script src="https://unpkg.com/esri-leaflet@3.0.2"></script>
+    <script src="Navigation.js"></script>
+
+    <script>
+        L.mapquest.key = '1Qg2WrWJ7pmr6ojEZ3nbUc2trjVc4s9N';
+        const map = L.map('map', {
+            center: [29.7604, -95.3698],
+            zoom: 9
+        });
+        
+
+        L.mapquest.tileLayer('map').addTo(map);
+        window['directionsLayer'] = null;
+
+        const layerNames = ["femaLayer", "vulnerablePopulationsLayer", "harveyinundationLayer"]
+
+        function toggleLayer(layerName, url, layerType = 'featureLayer') {
+            layerNames.map((checkName) => {
+                if (checkName != layerName && window[checkName]) {
+                    map.removeLayer(window[checkName]);
+                    window[checkName] = null;
                 }
-            } else {
-                if (window[layerName]) {
-                    map.removeLayer(window[layerName]);
-                    window[layerName] = null;
-                }
+            });
+
+            if (layerType === 'dynamicMapLayer') {
+                window[layerName] = L.esri.dynamicMapLayer({url: url}).addTo(map);
+            } else if (layerType === 'tiledMapLayer') {
+                window[layerName] = L.esri.tiledMapLayer({url: url}).addTo(map);
+            } else if (layerType === 'featureLayer') {
+                window[layerName] = L.esri.featureLayer({url: url}).addTo(map);
             }
         }
 
         document.getElementById('femaLayerSwitch').addEventListener('change', function() {
-            toggleLayer(this.checked, 'femaLayer', "https://gis.h-gac.com/arcgis/rest/services/Resilience/FEMA_NFHL_2019_Floodplain_13co/MapServer", 'tiledMapLayer');
+            toggleLayer('femaLayer', "https://gis.h-gac.com/arcgis/rest/services/Resilience/FEMA_NFHL_2019_Floodplain_13co/MapServer", 'tiledMapLayer');
         });
 
         document.getElementById('vulnerablePopulationsSwitch').addEventListener('change', function() {
-            toggleLayer(this.checked, 'vulnerablePopulationsLayer', "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_BGs_Vulnerable_Population/MapServer", 'dynamicMapLayer');
+            toggleLayer('vulnerablePopulationsLayer', "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_BGs_Vulnerable_Population/MapServer", 'dynamicMapLayer');
         });
 
-        document.getElementById('criticalFacilitiesSwitch').addEventListener('change', function() {
-            toggleLayer(this.checked, 'criticalFacilitiesLayer', "https://gis.h-gac.com/arcgis/rest/services/Hazard/Critical_Facilities/MapServer", 'dynamicMapLayer');
+        document.getElementById('harveyinundationSwitch').addEventListener('change', function () {
+            toggleLayer('harveyinundationLayer', "https://tiles.arcgis.com/tiles/nzS0F0zdNLvs7nc8/arcgis/rest/services/Harvey_DFO_Inundation_Tile3/MapServer", 'tiledMapLayer');
+        });
+
+        document.getElementById('noneSwitch').addEventListener('change', function () {
+            toggleLayer('noLayer', "", 'noLayer');
         });
     </script>
 </body>
