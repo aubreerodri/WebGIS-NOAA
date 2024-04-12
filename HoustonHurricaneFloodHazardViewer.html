@@ -23,7 +23,7 @@
         <label><strong>Layer Selection:</strong></label>
         <label><input type="radio" name="layerSelector" id="femaLayerSwitch"> FEMA National Flood Hazard Layer</label>
         <label><input type="radio" name="layerSelector" id="vulnerablePopulationsSwitch"> Vulnerable Populations</label>
-        <!-- <label><input type="radio" name="layerSelector" id="criticalFacilitiesSwitch"> Critical Facilities</label> -->
+        <label><input type="radio" name="layerSelector" id="harveyinundationSwitch" checked> Harvey Inundation</label>
         <label><input type="radio" name="layerSelector" id="noneSwitch" checked> None</label>
     </div>
 
@@ -54,7 +54,7 @@
         L.mapquest.tileLayer('map').addTo(map);
         window['directionsLayer'] = null;
 
-        const layerNames = ["femaLayer", "vulnerablePopulationsLayer"]
+        const layerNames = ["femaLayer", "vulnerablePopulationsLayer", "harveyinundationLayer"]
 
         function toggleLayer(layerName, url, layerType = 'featureLayer') {
             layerNames.map((checkName) => {
@@ -81,13 +81,13 @@
             toggleLayer('vulnerablePopulationsLayer', "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_BGs_Vulnerable_Population/MapServer", 'dynamicMapLayer');
         });
 
+        document.getElementById('harveyinundationSwitch').addEventListener('change', function () {
+            toggleLayer('harveyinundationLayer', "https://tiles.arcgis.com/tiles/nzS0F0zdNLvs7nc8/arcgis/rest/services/Harvey_DFO_Inundation_Tile3/MapServer", 'tiledMapLayer');
+        });
+
         document.getElementById('noneSwitch').addEventListener('change', function () {
             toggleLayer('noLayer', "", 'noLayer');
         });
-
-        // document.getElementById('criticalFacilitiesSwitch').addEventListener('change', function() {
-        //     toggleLayer('criticalFacilitiesLayer', "https://gis.h-gac.com/arcgis/rest/services/Hazard/Critical_Facilities/MapServer", 'dynamicMapLayer');
-        // });
     </script>
 </body>
 </html>
